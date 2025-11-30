@@ -2,4 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Omni Calculator responsive styles */
+.omni-calculator {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.omni-calculator iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 
