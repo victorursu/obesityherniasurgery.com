@@ -109,7 +109,12 @@ export default function Navbar() {
                   )}
                 </Link>
                 {item.submenu && openDropdown === item.name && (
-                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg py-2 z-50 border border-gray-200">
+                  <div 
+                    className="absolute left-0 top-full pt-2 w-64 z-50"
+                    onMouseEnter={() => setOpenDropdown(item.name)}
+                    onMouseLeave={() => setOpenDropdown(null)}
+                  >
+                    <div className="bg-white rounded-md shadow-lg py-2 border border-gray-200">
                     {item.submenu.map((subItem) => {
                       const isExternal = (subItem as any).external === true
                       const LinkComponent = isExternal ? 'a' : Link
@@ -131,6 +136,7 @@ export default function Navbar() {
                         </LinkComponent>
                       )
                     })}
+                    </div>
                   </div>
                 )}
               </div>

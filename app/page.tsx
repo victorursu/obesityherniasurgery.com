@@ -23,6 +23,15 @@ const slides = [
   {
     image: '/images/slide2-3.jpg',
   },
+  {
+    image: '/images/slide3-1.jpg',
+  },
+  {
+    image: '/images/slide3-2.jpg',
+  },
+  {
+    image: '/images/slide3-3.jpg',
+  },
 ]
 
 export default function Home() {

@@ -41,3 +41,4 @@ This creates an `out` directory with static files ready for deployment.
 - Add slideshow images to `public/images/`
 - Update homepage content in `app/page.tsx`
 
+
