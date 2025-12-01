@@ -112,7 +112,7 @@ export default function DietAfterBariatricSurgery() {
             </h2>
             <div className="mb-6">
               <Image
-                src="/images/diet/gif-fluid-tracker_1.gif"
+                src="/images/diet/gif-fluid-tracker_1.jpg"
                 alt="Fluid tracker"
                 width={800}
                 height={400}
@@ -331,7 +331,7 @@ export default function DietAfterBariatricSurgery() {
             <div className="mt-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">HOME FLUID TRACKING</h3>
               <Image
-                src="/images/diet/gif-fluid-tracker_1.gif"
+                src="/images/diet/gif-fluid-tracker_1.jpg"
                 alt="Home fluid tracking"
                 width={800}
                 height={400}
