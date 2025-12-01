@@ -65,7 +65,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 transition-colors">
+    <nav className="bg-white dark:bg-gray-900 shadow-lg dark:shadow-gray-800/50 dark:border-b dark:border-white/20 sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           <div className="flex items-center">
