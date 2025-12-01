@@ -42,7 +42,6 @@ export default function Navbar() {
   ]
 
   const menuItems = [
-    { name: 'Home', href: '/' },
     { 
       name: 'Bariatric', 
       href: '/bariatric',
