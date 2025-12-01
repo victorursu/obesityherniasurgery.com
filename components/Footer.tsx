@@ -18,26 +18,26 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">Dr. Marius Calin</h3>
-            <p className="text-gray-400">
+            <p className="text-gray-400 dark:text-gray-500">
               Expert bariatric and hernia surgery services
             </p>
           </div>
           
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="/" className="hover:text-white">Home</a></li>
-              <li><a href="/bariatric" className="hover:text-white">Bariatric</a></li>
-              <li><a href="/hernia" className="hover:text-white">Hernia</a></li>
-              <li><a href="/other" className="hover:text-white">Other</a></li>
-              <li><a href="/hospitals" className="hover:text-white">Hospitals</a></li>
-              <li><a href="/testimonials" className="hover:text-white">Testimonials</a></li>
-              <li><a href="/contact" className="hover:text-white">Contact</a></li>
+            <ul className="space-y-2 text-gray-400 dark:text-gray-500">
+              <li><a href="/" className="hover:text-white dark:hover:text-gray-300 transition-colors">Home</a></li>
+              <li><a href="/bariatric" className="hover:text-white dark:hover:text-gray-300 transition-colors">Bariatric</a></li>
+              <li><a href="/hernia" className="hover:text-white dark:hover:text-gray-300 transition-colors">Hernia</a></li>
+              <li><a href="/other" className="hover:text-white dark:hover:text-gray-300 transition-colors">Other</a></li>
+              <li><a href="/hospitals" className="hover:text-white dark:hover:text-gray-300 transition-colors">Hospitals</a></li>
+              <li><a href="/testimonials" className="hover:text-white dark:hover:text-gray-300 transition-colors">Testimonials</a></li>
+              <li><a href="/contact" className="hover:text-white dark:hover:text-gray-300 transition-colors">Contact</a></li>
             </ul>
           </div>
           
@@ -47,7 +47,7 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+        <div className="mt-8 pt-8 border-t border-gray-800 dark:border-gray-700 text-center text-gray-400 dark:text-gray-500">
           <p>&copy; {new Date().getFullYear()} Obesity & Hernia Surgery. All rights reserved.</p>
         </div>
       </div>

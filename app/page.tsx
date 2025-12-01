@@ -41,7 +41,7 @@ export default function Home() {
       
       <main className="flex-grow">
         {/* Appointment Button */}
-        <div className="bg-white py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-900 py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto text-center">
             <Link
               href="/appointment-scheduling"
@@ -57,24 +57,24 @@ export default function Home() {
         <Slideshow slides={slides} />
         
         {/* Hero Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Meet the Doctor
               </h1>
             </div>
             <div className="max-w-4xl mx-auto">
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                 Dr. Marius Calin is a general and bariatric surgeon. His expertise includes complex general and bariatric (weight loss) procedures, hernia, colon surgery, heartburn, acid reflux, gallbladder diseases, and other conditions. He practices surgery through a minimally invasive approach, laparoscopic and robotic surgery.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                 He is one of the early adopters of robotic technology, and he had been using the da Vinci Robotic system for a long time, early after its implementation. Furthermore, he has numerous publications in this field, and he was designated to be a proctor for robotic surgery, sharing his experience with other surgeons who are willing to learn this technology.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                 He is a fellow of the American Society of Metabolic and Bariatric Surgery and has extensive expertise in bariatric surgery. He was the first surgeon to perform the single anastomosis duodenal switch procedure (a relatively new and very efficient weight loss procedure) at Mountainside Hospital, one of the hospitals where he currently performs bariatric surgery.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                 He also performs sleeve gastrectomy, gastric bypass surgery, and revision bariatric procedures. Patients who already had bariatric surgery, but struggle with weight regain, reflux, heartburn, or other conditions are welcome to his office to discuss their options.
               </p>
             </div>
@@ -84,10 +84,10 @@ export default function Home() {
         {/* BIO Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8" style={{ background: '#C8F0F5' }}>
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-gray-800 mb-8">
               BIO Marius Calin MD FACS FASMBS FPD MBS DABOM
             </h2>
-            <div className="max-w-4xl mx-auto text-gray-900">
+            <div className="max-w-4xl mx-auto text-gray-900 dark:text-gray-800">
               <p className="text-lg leading-relaxed mb-6">
                 Dr. Calin is a general and bariatric surgeon. His expertise includes complex general and bariatric (weight loss) procedures, hernia, colon surgery, heartburn, acid reflux, gallbladder diseases, and other conditions. He practices surgery through a minimally invasive approach, laparoscopic and robotic surgery. He is one of the early adopters of robotic technology, and he had been using the da Vinci Robotic system for a long time, early after its implementation. Furthermore, he has numerous publications in this field, and he was designated to be a proctor for robotic surgery, sharing his experience with other surgeons who are willing to learn this technology. He is a fellow of the American Society of Metabolic and Bariatric Surgery and has extensive expertise in bariatric surgery. He was the first surgeon to perform the single anastomosis duodenal switch procedure (a relatively new and very efficient weight loss procedure) at Mountainside Hospital, one of the hospitals where he currently performs bariatric surgery. He also performs sleeve gastrectomy, gastric bypass surgery, and revision bariatric procedures. Patients who already had bariatric surgery, but struggle with weight regain, reflux, heartburn, or other conditions are welcome to his office to discuss their options.
               </p>
@@ -111,137 +111,137 @@ export default function Home() {
         </section>
 
         {/* Services Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-lighter">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-lighter dark:bg-gray-800">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-gray-100 mb-12">
               Our Services
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Surgical Weight Loss
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Comprehensive bariatric procedures including gastric bypass, sleeve gastrectomy, and duodenal switch to help achieve significant and sustainable weight loss.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Non Surgical Weight Loss
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Non-invasive weight management options including gastric balloon procedures and comprehensive nutritional counseling programs.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Reflux and Heartburn
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Expert diagnosis and treatment of GERD, acid reflux, and heartburn using both medical management and surgical interventions when needed.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Endoscopy
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Upper gastrointestinal endoscopy for diagnosis and treatment of conditions affecting the esophagus, stomach, and upper digestive tract.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   ERCP
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Endoscopic retrograde cholangiopancreatography for diagnosing and treating conditions of the bile ducts and pancreatic ducts.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Hernia Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Minimally invasive repair of inguinal, umbilical, incisional, and other types of hernias using advanced laparoscopic and robotic techniques.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Gallbladder Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Laparoscopic cholecystectomy for treatment of gallstones, gallbladder disease, and related conditions with minimal scarring and faster recovery.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Surgery for Appendicitis
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Emergency and scheduled appendectomy procedures using minimally invasive laparoscopic techniques for rapid recovery.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Colon Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Surgical treatment for colorectal conditions including cancer, diverticulitis, inflammatory bowel disease, and other colon disorders.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Colonoscopy
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Screening and diagnostic colonoscopy for early detection of colon cancer, polyps, and other colorectal conditions.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Robotic Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Advanced da Vinci robotic surgery for enhanced precision, smaller incisions, and improved outcomes across various surgical procedures.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Laparoscopic Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Minimally invasive keyhole surgery techniques for reduced pain, shorter hospital stays, and faster return to daily activities.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Lipoma Removal
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Surgical removal of benign fatty tumors (lipomas) that may cause discomfort or cosmetic concerns.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Sebaceous Cyst Removal
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Safe and effective removal of sebaceous cysts to prevent infection, reduce discomfort, and improve appearance.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Pilonidal Cyst Surgery
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Comprehensive treatment for pilonidal disease including excision and advanced closure techniques to prevent recurrence.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="text-xl font-semibold text-primary dark:text-primary-light mb-2">
                   Excess Skin Removal
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Body contouring procedures to remove excess skin after significant weight loss, improving both function and appearance.
                 </p>
               </div>

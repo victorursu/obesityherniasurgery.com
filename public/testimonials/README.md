@@ -17,3 +17,4 @@ This folder should contain the before and after photos for testimonials.
 The testimonials data is stored in `data.json` and will automatically load the images when they are added to this folder.
 
 
+
