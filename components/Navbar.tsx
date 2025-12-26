@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTheme } from './ThemeProvider'
+import GastricBypassLogo from './GastricBypassLogo'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -69,13 +70,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link href="/" className="flex flex-col">
-              <span className="text-xl md:text-2xl font-bold text-primary dark:text-primary-light leading-tight">
-                Marius Calin M.D. F.A.C.S
-              </span>
-              <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-tight">
-                Obesity Hernia Surgery of New Jersey
-              </span>
+            <Link href="/" className="flex items-center space-x-3">
+              <GastricBypassLogo className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-xl md:text-2xl font-bold text-primary dark:text-primary-light leading-tight">
+                  Marius Calin M.D. F.A.C.S
+                </span>
+                <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-tight">
+                  Obesity Hernia Surgery of New Jersey
+                </span>
+              </div>
             </Link>
           </div>
           
