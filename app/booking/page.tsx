@@ -21,6 +21,11 @@ interface Booking {
   phone: string
   appointmentType: string
   details?: string
+  reasonForAppointment?: string
+  dateOfBirth?: string
+  healthInsuranceId?: string
+  healthInsuranceCarrier?: string
+  authorizationConsent?: boolean
 }
 
 interface MonthInfo {
@@ -38,12 +43,18 @@ export default function BookingPage() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<MonthInfo | null>(null)
   const [timeFormat, setTimeFormat] = useState<'24h' | '12h'>('24h')
+  const [showSecondStep, setShowSecondStep] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     appointmentType: '',
-    details: ''
+    details: '',
+    reasonForAppointment: '',
+    dateOfBirth: '',
+    healthInsuranceId: '',
+    healthInsuranceCarrier: '',
+    authorizationConsent: false
   })
 
   const appointmentTypes = [
@@ -229,13 +240,40 @@ export default function BookingPage() {
     setSelectedDate(date)
     setSelectedTime(time)
     setShowBookingForm(true)
-    setFormData({ name: '', email: '', phone: '', appointmentType: '', details: '' })
+    setShowSecondStep(false)
+    setFormData({ 
+      name: '', 
+      email: '', 
+      phone: '', 
+      appointmentType: '', 
+      details: '',
+      reasonForAppointment: '',
+      dateOfBirth: '',
+      healthInsuranceId: '',
+      healthInsuranceCarrier: '',
+      authorizationConsent: false
+    })
+  }
+
+  const handleContinueBooking = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Validate first step fields
+    if (!formData.name || !formData.email || !formData.phone || !formData.appointmentType) {
+      return
+    }
+    // Show second step
+    setShowSecondStep(true)
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!selectedDate || !selectedTime) return
+
+    // Validate second step fields
+    if (!formData.reasonForAppointment || !formData.dateOfBirth || !formData.healthInsuranceId || !formData.healthInsuranceCarrier || !formData.authorizationConsent) {
+      return
+    }
 
     const slotKey = `${selectedDate}-${selectedTime}`
     const booking: Booking = {
@@ -248,14 +286,10 @@ export default function BookingPage() {
     setBookings(prev => new Map(prev).set(slotKey, booking))
 
     setShowBookingForm(false)
+    setShowSecondStep(false)
     setShowConfirmation(true)
     setSelectedDate(null)
     setSelectedTime(null)
-    
-    // Hide confirmation after 5 seconds
-    setTimeout(() => {
-      setShowConfirmation(false)
-    }, 5000)
   }
 
   const isSlotBooked = (date: string, time: string) => {
@@ -324,9 +358,18 @@ export default function BookingPage() {
           </h1>
 
           {showConfirmation && (
-            <div className="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 rounded-lg">
-              <p className="font-semibold">Booking confirmed!</p>
-              <p>Your appointment has been scheduled. (Note: the appt. is not finalized until you receive a confirmation message.)</p>
+            <div className="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 rounded-lg relative">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="absolute top-2 right-2 text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-100 transition-colors"
+                aria-label="Dismiss"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <p className="font-semibold pr-6">Booking confirmed!</p>
+              <p className="pr-6">Your appointment has been scheduled. (Note: the appt. is not finalized until you receive a confirmation message.)</p>
             </div>
           )}
 
@@ -357,6 +400,7 @@ export default function BookingPage() {
                 className="fixed inset-0 bg-black bg-opacity-50 z-40"
                 onClick={() => {
                   setShowBookingForm(false)
+                  setShowSecondStep(false)
                   setSelectedDate(null)
                   setSelectedTime(null)
                 }}
@@ -365,10 +409,12 @@ export default function BookingPage() {
               {/* Modal */}
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden relative"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="p-6">
+                  <div className="flex transition-transform duration-300 ease-in-out" style={{ width: '200%', transform: showSecondStep ? 'translateX(-50%)' : 'translateX(0)' }}>
+                    {/* First Step */}
+                    <div className="w-1/2 p-6 overflow-y-auto max-h-[90vh]">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         Book Appointment
@@ -376,6 +422,7 @@ export default function BookingPage() {
                       <button
                         onClick={() => {
                           setShowBookingForm(false)
+                          setShowSecondStep(false)
                           setSelectedDate(null)
                           setSelectedTime(null)
                         }}
@@ -408,7 +455,7 @@ export default function BookingPage() {
                       )}
                     </p>
                     
-                    <form onSubmit={handleBookingSubmit} className="space-y-4">
+                    <form onSubmit={handleContinueBooking} className="space-y-4">
                       <div>
                         <label htmlFor="appointmentType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Appointment Type *
@@ -493,12 +540,13 @@ export default function BookingPage() {
                           type="submit"
                           className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors"
                         >
-                          Confirm Booking
+                          Continue booking
                         </button>
                         <button
                           type="button"
                           onClick={() => {
                             setShowBookingForm(false)
+                            setShowSecondStep(false)
                             setSelectedDate(null)
                             setSelectedTime(null)
                           }}
@@ -508,6 +556,133 @@ export default function BookingPage() {
                         </button>
                       </div>
                     </form>
+                    </div>
+
+                    {/* Second Step */}
+                    <div className="w-1/2 p-6 overflow-y-auto max-h-[90vh]">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                          Additional Information
+                        </h2>
+                        <button
+                          onClick={() => setShowSecondStep(false)}
+                          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                          aria-label="Back"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleBookingSubmit} className="space-y-4">
+                        <div>
+                          <label htmlFor="reasonForAppointment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            REASON FOR THE APPOINTMENT *
+                          </label>
+                          <select
+                            id="reasonForAppointment"
+                            required
+                            value={formData.reasonForAppointment}
+                            onChange={(e) => setFormData({ ...formData, reasonForAppointment: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                          >
+                            <option value="">--select an option--</option>
+                            <option value="WEIGHT LOSS - PÉRDIDA DE PESO">WEIGHT LOSS - PÉRDIDA DE PESO</option>
+                            <option value="HERNIA">HERNIA</option>
+                            <option value="GALLBLADDER - VESÍCULA BILIAR">GALLBLADDER - VESÍCULA BILIAR</option>
+                            <option value="FOLLOW UP AFTER SURGERY WITH DR CALIN">FOLLOW UP AFTER SURGERY WITH DR CALIN</option>
+                            <option value="SEGUIMIENTO DESPUÉS DE LA CIRUGÍA CON EL DR. CALIN">SEGUIMIENTO DESPUÉS DE LA CIRUGÍA CON EL DR. CALIN</option>
+                            <option value="OTHER - OTRO">OTHER - OTRO</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            DATE OF BIRTH *
+                          </label>
+                          <input
+                            type="text"
+                            id="dateOfBirth"
+                            required
+                            value={formData.dateOfBirth}
+                            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                            placeholder="MM/DD/YYYY"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="healthInsuranceId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Health Insurance ID Number *
+                          </label>
+                          <input
+                            type="text"
+                            id="healthInsuranceId"
+                            required
+                            value={formData.healthInsuranceId}
+                            onChange={(e) => setFormData({ ...formData, healthInsuranceId: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                            placeholder="Enter your health insurance ID number"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="healthInsuranceCarrier" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Health Insurance Carrier *
+                          </label>
+                          <input
+                            type="text"
+                            id="healthInsuranceCarrier"
+                            required
+                            value={formData.healthInsuranceCarrier}
+                            onChange={(e) => setFormData({ ...formData, healthInsuranceCarrier: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                            placeholder="Enter your health insurance carrier"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Authorization Consent *
+                          </label>
+                          <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700/50 max-h-40 overflow-y-auto mb-3">
+                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                              I hereby authorize Dr. Marius Calin and his staff to collect, use, and store my personal and medical information, including but not limited to my name, date of birth, contact details, medical history, diagnostic results, treatment plans, insurance and billing data, for purposes including medical diagnosis and treatment, insurance claims, appointment reminders, care coordination, and administrative operations. I understand this information will only be shared with authorized entities involved in my care or required operations, and will not be sold or disclosed to unauthorized parties. I acknowledge my right to revoke this consent in writing at any time, understanding that such revocation will not apply to information already used or disclosed. My signature confirms I have read and agree to this statement.
+                            </p>
+                          </div>
+                          <div className="flex items-start">
+                            <input
+                              type="checkbox"
+                              id="authorizationConsent"
+                              required
+                              checked={formData.authorizationConsent}
+                              onChange={(e) => setFormData({ ...formData, authorizationConsent: e.target.checked })}
+                              className="mt-1 mr-2 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                            />
+                            <label htmlFor="authorizationConsent" className="text-sm text-gray-700 dark:text-gray-300">
+                              I have read and agree to the authorization statement above *
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4 pt-2">
+                          <button
+                            type="submit"
+                            className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors"
+                          >
+                            Confirm Booking
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowSecondStep(false)}
+                            className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                          >
+                            Back
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
