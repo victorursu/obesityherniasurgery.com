@@ -42,13 +42,15 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
+            <h4 className="text-lg font-semibold mb-4">
+              Connect with us
+            </h4>
             <SocialLinks links={socialLinks} />
           </div>
         </div>
         
-        <div className="mt-8 pt-8 border-t border-gray-800 dark:border-gray-700 text-center text-gray-400 dark:text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Obesity & Hernia Surgery. All rights reserved.</p>
+        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400 dark:text-gray-500">
+          <p>&copy; {new Date().getFullYear()} Dr. Marius Calin. All rights reserved.</p>
         </div>
       </div>
     </footer>

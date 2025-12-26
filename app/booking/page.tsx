@@ -19,6 +19,7 @@ interface Booking {
   name: string
   email: string
   phone: string
+  appointmentType: string
   details?: string
 }
 
@@ -36,12 +37,25 @@ export default function BookingPage() {
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<MonthInfo | null>(null)
+  const [timeFormat, setTimeFormat] = useState<'24h' | '12h'>('24h')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    appointmentType: '',
     details: ''
   })
+
+  const appointmentTypes = [
+    'BOOK AN APPOINTMENT WITH DR CALIN',
+    'WEIGHT LOSS SURGERY OPTIONS',
+    'WEIGHT LOSS MEDICATION',
+    'HERNIA',
+    'GALLBLADDER',
+    'COLONOSCOPY',
+    'OTHER SURGICAL PROBLEMS',
+    'FOLLOW UP WITH DR CALIN AFTER SURGERY'
+  ]
 
   // Generate 6 months from current date
   const months = useMemo(() => {
@@ -132,6 +146,18 @@ export default function BookingPage() {
     })
   }
 
+  // Format time slot based on selected format
+  const formatTimeSlot = (time: string): { time: string; period: string } | string => {
+    if (timeFormat === '24h') {
+      return time
+    }
+    // Convert 24h to 12h format
+    const [hours, minutes] = time.split(':').map(Number)
+    const period = hours >= 12 ? 'PM' : 'AM'
+    const hours12 = hours % 12 || 12
+    return { time: `${hours12}:${minutes.toString().padStart(2, '0')}`, period }
+  }
+
   // Get all days in a month (starting from the 1st)
   const getDaysInMonth = (year: number, month: number) => {
     const days: Date[] = []
@@ -203,7 +229,7 @@ export default function BookingPage() {
     setSelectedDate(date)
     setSelectedTime(time)
     setShowBookingForm(true)
-    setFormData({ name: '', email: '', phone: '', details: '' })
+    setFormData({ name: '', email: '', phone: '', appointmentType: '', details: '' })
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
@@ -243,7 +269,55 @@ export default function BookingPage() {
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Navbar />
       
-      <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+      <main className="flex-grow pt-0 pb-8 px-4 sm:px-6 lg:px-8">
+        {/* Sticky Controls Bar */}
+        <div className="sticky top-20 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 py-4 mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              {/* Time Format Toggle */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Time Format:</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">24h</span>
+                <button
+                  onClick={() => setTimeFormat(timeFormat === '24h' ? '12h' : '24h')}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                    timeFormat === '12h' ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
+                  }`}
+                  aria-label="Toggle time format"
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      timeFormat === '12h' ? 'translate-x-5' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
+                <span className="text-xs text-gray-600 dark:text-gray-400">12h</span>
+              </div>
+
+              {/* Color Coding Legend */}
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <span className="font-medium text-gray-700 dark:text-gray-300">Legend:</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-primary"></div>
+                  <span className="text-gray-600 dark:text-gray-400">Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                  <span className="text-gray-600 dark:text-gray-400">Unavailable</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-red-200 dark:bg-red-900"></div>
+                  <span className="text-gray-600 dark:text-gray-400">Booked</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-pink-50 dark:bg-pink-700/30"></div>
+                  <span className="text-gray-600 dark:text-gray-400">Sunday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
             Book an Appointment
@@ -315,10 +389,46 @@ export default function BookingPage() {
                     </div>
                     
                     <p className="text-gray-600 dark:text-gray-400 mb-6">
-                      {formatDate(selectedDate)} at {selectedTime}
+                      {formatDate(selectedDate)} at{' '}
+                      {timeFormat === '24h' ? (
+                        selectedTime
+                      ) : (
+                        (() => {
+                          const formatted = formatTimeSlot(selectedTime)
+                          if (typeof formatted === 'string') {
+                            return selectedTime
+                          }
+                          return (
+                            <>
+                              {formatted.time}
+                              <sup className="text-[10px] leading-none">{formatted.period}</sup>
+                            </>
+                          )
+                        })()
+                      )}
                     </p>
                     
                     <form onSubmit={handleBookingSubmit} className="space-y-4">
+                      <div>
+                        <label htmlFor="appointmentType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          Appointment Type *
+                        </label>
+                        <select
+                          id="appointmentType"
+                          required
+                          value={formData.appointmentType}
+                          onChange={(e) => setFormData({ ...formData, appointmentType: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        >
+                          <option value="">Select appointment type</option>
+                          {appointmentTypes.map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Name *
@@ -421,11 +531,16 @@ export default function BookingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {allDays.map((day) => {
                     const dateString = formatDateString(day)
+                    const isSunday = day.getDay() === 0
                     
                     return (
                       <div
                         key={dateString}
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+                        className={`rounded-lg shadow-lg p-6 ${
+                          isSunday 
+                            ? 'bg-pink-50 dark:bg-pink-700/30' 
+                            : 'bg-white dark:bg-gray-800'
+                        }`}
                       >
                         <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                           {formatDay(dateString)}
@@ -451,7 +566,20 @@ export default function BookingPage() {
                                   }
                                 `}
                               >
-                                {slot}
+                                {timeFormat === '24h' ? (
+                                  slot
+                                ) : (() => {
+                                  const formatted = formatTimeSlot(slot)
+                                  if (typeof formatted === 'string') {
+                                    return formatted
+                                  }
+                                  return (
+                                    <>
+                                      {formatted.time}
+                                      <sup className="text-[10px] leading-none">{formatted.period}</sup>
+                                    </>
+                                  )
+                                })()}
                               </button>
                             )
                           })}
