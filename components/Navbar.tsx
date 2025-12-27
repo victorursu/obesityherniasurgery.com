@@ -79,7 +79,7 @@ export default function Navbar() {
                 <span className="text-xl md:text-2xl font-bold text-primary dark:text-primary-light leading-tight">
                   Marius Calin M.D. F.A.C.S
                 </span>
-                <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-tight">
+                <span className="text-[10px] md:text-sm text-gray-600 dark:text-gray-400 leading-tight">
                   Obesity Hernia Surgery of New Jersey
                 </span>
               </div>
@@ -213,7 +213,7 @@ export default function Navbar() {
           {/* Hamburger Button */}
           <div className="md:hidden flex items-center space-x-2">
             {/* Language Switcher Mobile */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setLanguage('en')}
                 className={`p-1.5 rounded-md transition-colors ${
@@ -228,8 +228,8 @@ export default function Navbar() {
                   countryCode="GB"
                   svg
                   style={{
-                    width: '1rem',
-                    height: '1rem',
+                    width: '1.25rem',
+                    height: '1.25rem',
                   }}
                 />
               </button>
@@ -247,8 +247,8 @@ export default function Navbar() {
                   countryCode="ES"
                   svg
                   style={{
-                    width: '1rem',
-                    height: '1rem',
+                    width: '1.25rem',
+                    height: '1.25rem',
                   }}
                 />
               </button>

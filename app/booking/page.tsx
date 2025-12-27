@@ -404,22 +404,22 @@ export default function BookingPage() {
               </div>
 
               {/* Color Coding Legend */}
-              <div className="flex flex-wrap items-center gap-4 text-sm">
+              <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm">
                 <span className="font-medium text-gray-700 dark:text-gray-300">{translations?.legend || 'Legend'}:</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-primary"></div>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-primary"></div>
                   <span className="text-gray-600 dark:text-gray-400">{translations?.available || 'Available'}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
                   <span className="text-gray-600 dark:text-gray-400">{translations?.unavailable || 'Unavailable'}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-red-200 dark:bg-red-900"></div>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-red-200 dark:bg-red-900"></div>
                   <span className="text-gray-600 dark:text-gray-400">{translations?.booked || 'Booked'}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-pink-50 dark:bg-pink-700/30"></div>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-pink-50 dark:bg-pink-700/30"></div>
                   <span className="text-gray-600 dark:text-gray-400">{translations?.sunday || 'Sunday'}</span>
                 </div>
               </div>
