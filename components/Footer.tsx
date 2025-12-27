@@ -30,15 +30,10 @@ export default function Footer() {
           
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400 dark:text-gray-500">
-              <li><a href="/" className="hover:text-white dark:hover:text-gray-300 transition-colors">Home</a></li>
-              <li><a href="/bariatric" className="hover:text-white dark:hover:text-gray-300 transition-colors">Bariatric</a></li>
-              <li><a href="/hernia" className="hover:text-white dark:hover:text-gray-300 transition-colors">Hernia</a></li>
-              <li><a href="/other" className="hover:text-white dark:hover:text-gray-300 transition-colors">Other</a></li>
-              <li><a href="/hospitals" className="hover:text-white dark:hover:text-gray-300 transition-colors">Hospitals</a></li>
-              <li><a href="/testimonials" className="hover:text-white dark:hover:text-gray-300 transition-colors">Testimonials</a></li>
-              <li><a href="/contact" className="hover:text-white dark:hover:text-gray-300 transition-colors">Contact</a></li>
-            </ul>
+            <div className="flex gap-4 text-gray-400 dark:text-gray-500">
+              <a href="/testimonials" className="hover:text-white dark:hover:text-gray-300 transition-colors">Testimonials</a>
+              <a href="/contact" className="hover:text-white dark:hover:text-gray-300 transition-colors">Contact</a>
+            </div>
           </div>
           
           <div>
@@ -50,12 +45,17 @@ export default function Footer() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400 dark:text-gray-500">
+          <div className="flex justify-center gap-4 mb-4">
+            <a href="/terms-of-use" className="hover:text-white dark:hover:text-gray-300 transition-colors">Terms of Use</a>
+            <a href="/patient-bill-of-rights" className="hover:text-white dark:hover:text-gray-300 transition-colors">Patient Bill of Rights</a>
+          </div>
           <p>&copy; {new Date().getFullYear()} Dr. Marius Calin. All rights reserved.</p>
         </div>
       </div>
     </footer>
   )
 }
+
 
 
 
