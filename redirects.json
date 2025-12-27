@@ -3,6 +3,11 @@
     "source": "/appointment-schedule",
     "destination": "/booking",
     "permanent": true
+  },
+  {
+    "source": "/appointment-scheduling",
+    "destination": "/booking",
+    "permanent": true
   }
 ]
 
