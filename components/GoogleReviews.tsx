@@ -12,7 +12,6 @@ interface GoogleReview {
 
 interface GoogleReviewsProps {
   placeId?: string
-  apiKey?: string
   maxReviews?: number
 }
 
@@ -26,31 +25,35 @@ export default function GoogleReviews({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // If API key and place ID are provided, fetch from Google Places API
-    if (apiKey && placeId) {
-      fetchGoogleReviews(placeId, apiKey)
+    // If place ID is provided, fetch from our API route (which proxies to Google Places API)
+    if (placeId) {
+      fetchGoogleReviews(placeId)
     } else {
-      // Don't show the widget if no credentials are provided
+      // Don't show the widget if no place ID is provided
       setLoading(false)
     }
-  }, [apiKey, placeId])
+  }, [placeId])
 
-  const fetchGoogleReviews = async (placeId: string, apiKey: string) => {
+  const fetchGoogleReviews = async (placeId: string) => {
     try {
+      // Call our Next.js API route instead of Google directly (avoids CORS issues)
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`
+        `/api/google-reviews?place_id=${encodeURIComponent(placeId)}`
       )
       
       if (!response.ok) {
-        throw new Error('Failed to fetch reviews')
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error('API error response:', errorData)
+        throw new Error(errorData.error || errorData.details?.error_message || 'Failed to fetch reviews')
       }
 
       const data = await response.json()
       
-      if (data.status === 'OK' && data.result?.reviews) {
-        setReviews(data.result.reviews.slice(0, maxReviews))
+      if (data.status === 'OK' && data.reviews) {
+        setReviews(data.reviews.slice(0, maxReviews))
       } else {
-        throw new Error(data.error_message || 'Failed to load reviews')
+        console.error('Unexpected response:', data)
+        throw new Error(data.error || data.details?.error_message || 'Failed to load reviews')
       }
     } catch (err) {
       console.error('Error fetching Google reviews:', err)
