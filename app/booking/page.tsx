@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import DoctorInfoCard from '@/components/DoctorInfoCard'
 import { useLanguage } from '@/components/LanguageProvider'
 
 interface DayAvailability {
@@ -1053,6 +1054,11 @@ export default function BookingPage() {
               <p className="text-gray-600 dark:text-gray-400">Loading availability...</p>
             </div>
           )}
+
+          {/* Doctor Info Card */}
+          <div className="mt-12">
+            <DoctorInfoCard />
+          </div>
         </div>
       </main>
       
