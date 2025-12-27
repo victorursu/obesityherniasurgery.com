@@ -136,7 +136,7 @@ export default function GoogleReviews({
 
         <div className="text-center mt-8">
           <a
-            href="https://www.google.com/maps/place/Dr.+Marius+Calin"
+            href={placeId ? `https://www.google.com/maps/place/?q=place_id:${placeId}` : 'https://www.google.com/maps/place/Dr.+Marius+Calin'}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary dark:text-primary-light hover:underline font-medium"
