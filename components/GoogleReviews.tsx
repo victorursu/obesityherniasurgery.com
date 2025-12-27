@@ -139,9 +139,17 @@ export default function GoogleReviews({
             href={placeId ? `https://www.google.com/maps/place/?q=place_id:${placeId}` : 'https://www.google.com/maps/place/Dr.+Marius+Calin'}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary dark:text-primary-light hover:underline font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors shadow-md hover:shadow-lg"
           >
-            View all reviews on Google
+            <svg
+              className="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 19c-.721 0-1.418-.109-2.073-.312a4.5 4.5 0 01-2.717-2.717A7.028 7.028 0 015 12c0-3.584 2.916-6.5 6.5-6.5S18.5 8.416 18.5 12 15.584 18.5 12 18.5z"/>
+              <path d="M12 14.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zm0-3.5c-.552 0-1 .448-1 1s.448 1 1 1 1-.448 1-1-.448-1-1-1z"/>
+            </svg>
+            Leave a Review on Google
             <svg
               className="w-5 h-5"
               fill="none"
