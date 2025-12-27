@@ -44,19 +44,26 @@
     "booked": "Booked",
     "sunday": "Sunday",
     "weekdays": {
-      "monday": "Mon",
-      "tuesday": "Tue",
-      "wednesday": "Wed",
-      "thursday": "Thu",
-      "friday": "Fri",
-      "saturday": "Sat",
-      "sunday": "Sun"
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
     },
     "appointmentType": "Appointment Type",
     "selectAppointmentType": "Select appointment type",
     "detailsAboutVisit": "Details about your visit",
     "detailsAboutVisitPlaceholder": "Please provide any additional details about your visit (optional)",
     "bookAppointment": "Book Appointment",
+    "bookAppointmentFor": "Book an Appointment for",
+    "selectOfficeToViewAvailability": "Please select an office to view availability",
+    "changeOffice": "If this is not your preferred office, click here to change it",
+    "offices": {
+      "springfield": "Springfield Office",
+      "hudson": "Hudson Regional Office"
+    },
     "appointmentTypes": {
       "appointment_with_dr_calin": "Book an Appointment with Dr Calin",
       "weight_loss_surgery_options": "Weight Loss Surgery Options",
@@ -132,19 +139,26 @@
     "booked": "Reservado",
     "sunday": "Domingo",
     "weekdays": {
-      "monday": "Lun",
-      "tuesday": "Mar",
-      "wednesday": "Mié",
-      "thursday": "Jue",
-      "friday": "Vie",
-      "saturday": "Sáb",
-      "sunday": "Dom"
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
     },
     "appointmentType": "Tipo de Cita",
     "selectAppointmentType": "Seleccione el tipo de cita",
     "detailsAboutVisit": "Detalles sobre su visita",
     "detailsAboutVisitPlaceholder": "Por favor proporcione cualquier detalle adicional sobre su visita (opcional)",
     "bookAppointment": "Reservar Cita",
+    "bookAppointmentFor": "Reservar una Cita para",
+    "selectOfficeToViewAvailability": "Por favor seleccione una oficina para ver la disponibilidad",
+    "changeOffice": "Si esta no es su oficina preferida, haga clic aquí para cambiarla",
+    "offices": {
+      "springfield": "Oficina de Springfield",
+      "hudson": "Oficina Regional de Hudson"
+    },
     "appointmentTypes": {
       "appointment_with_dr_calin": "Reservar una Cita con el Dr. Calin",
       "weight_loss_surgery_options": "Opciones de Cirugía para Pérdida de Peso",

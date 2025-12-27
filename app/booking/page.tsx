@@ -10,8 +10,21 @@ interface DayAvailability {
   slots: string[]
 }
 
-interface AvailabilityData {
+interface OfficeAddress {
+  city: string
+  state: string
+  country: string
+}
+
+interface Office {
+  office_id: string
+  office_name: string
+  office_address: OfficeAddress
   availability: DayAvailability[]
+}
+
+interface AvailabilityData {
+  offices: Office[]
 }
 
 interface Booking {
@@ -38,6 +51,7 @@ interface MonthInfo {
 
 export default function BookingPage() {
   const { language, translations } = useLanguage()
+  const [offices, setOffices] = useState<Office[]>([])
   const [availability, setAvailability] = useState<DayAvailability[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -47,6 +61,7 @@ export default function BookingPage() {
   const [selectedMonth, setSelectedMonth] = useState<MonthInfo | null>(null)
   const [timeFormat, setTimeFormat] = useState<'24h' | '12h'>('24h')
   const [showSecondStep, setShowSecondStep] = useState(false)
+  const [selectedOffice, setSelectedOffice] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -131,7 +146,7 @@ export default function BookingPage() {
         return res.json()
       })
       .then((data: AvailabilityData) => {
-        setAvailability(data.availability)
+        setOffices(data.offices || [])
       })
       .catch(err => {
         console.error('Error loading availability:', err)
@@ -139,11 +154,23 @@ export default function BookingPage() {
         fetch('/booking/availability.json')
           .then(res => res.json())
           .then((data: AvailabilityData) => {
-            setAvailability(data.availability)
+            setOffices(data.offices || [])
           })
           .catch(fallbackErr => console.error('Error loading fallback availability:', fallbackErr))
       })
   }, [])
+
+  // Update availability when office is selected
+  useEffect(() => {
+    if (selectedOffice && offices.length > 0) {
+      const office = offices.find(o => o.office_id === selectedOffice)
+      if (office) {
+        setAvailability(office.availability)
+      }
+    } else {
+      setAvailability([])
+    }
+  }, [selectedOffice, offices])
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -203,8 +230,8 @@ export default function BookingPage() {
       translations.weekdays.thursday,  // 4
       translations.weekdays.friday,     // 5
       translations.weekdays.saturday   // 6
-    ] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-    const weekdayName = weekdays[weekdayIndex] || date.toLocaleDateString('en-US', { weekday: 'short' })
+    ] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const weekdayName = weekdays[weekdayIndex] || date.toLocaleDateString('en-US', { weekday: 'long' })
     return `${weekdayName} ${day}`
   }
 
@@ -256,16 +283,19 @@ export default function BookingPage() {
     return days
   }
 
-  // Generate all time slots between 9:00 and 16:30 (30 min intervals)
+  // Generate all time slots between 9:00 and 16:40 (20 min intervals)
   const generateAllTimeSlots = () => {
     const slots: string[] = []
     for (let hour = 9; hour < 17; hour++) {
       slots.push(`${hour.toString().padStart(2, '0')}:00`)
-      if (hour < 16) {
-        slots.push(`${hour.toString().padStart(2, '0')}:30`)
-      }
+      slots.push(`${hour.toString().padStart(2, '0')}:20`)
+      slots.push(`${hour.toString().padStart(2, '0')}:40`)
     }
-    return slots
+    // Remove slots after 16:40
+    return slots.filter(slot => {
+      const [hours, minutes] = slot.split(':').map(Number)
+      return hours < 16 || (hours === 16 && minutes <= 40)
+    })
   }
 
   // Get all days for selected month (including days without availability)
@@ -428,9 +458,50 @@ export default function BookingPage() {
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
-            {translations?.bookAnAppointment || 'Book an Appointment'}
-          </h1>
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              {selectedOffice && offices.length > 0
+                ? `${translations?.bookAppointmentFor || 'Book an Appointment for'} ${offices.find(o => o.office_id === selectedOffice)?.office_name || selectedOffice}`
+                : (translations?.bookAnAppointment || 'Book an Appointment')
+              }
+            </h1>
+            {selectedOffice && offices.length > 0 && (() => {
+              const office = offices.find(o => o.office_id === selectedOffice)
+              return office?.office_address ? (
+                <>
+                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-3">
+                    {office.office_address.city}, {office.office_address.state} {office.office_address.country}
+                  </p>
+                  <button
+                    onClick={() => setSelectedOffice(null)}
+                    className="text-sm md:text-base text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline font-medium transition-colors"
+                  >
+                    {translations?.changeOffice || 'If this is not your preferred office, click here to change it'}
+                  </button>
+                </>
+              ) : null
+            })()}
+          </div>
+
+          {/* Office Selection Buttons */}
+          {!selectedOffice && offices.length > 0 && (
+            <div className="mb-8">
+              <p className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-6 text-center">
+                {translations?.selectOfficeToViewAvailability || 'Please select an office to view availability'}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                {offices.map((office) => (
+                  <button
+                    key={office.office_id}
+                    onClick={() => setSelectedOffice(office.office_id)}
+                    className="w-full sm:w-auto px-8 py-4 bg-primary text-white rounded-lg font-semibold text-lg hover:bg-primary-dark transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    {office.office_name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {showConfirmation && (
             <div className="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 rounded-lg relative">
@@ -449,23 +520,25 @@ export default function BookingPage() {
           )}
 
           {/* Month Tabs */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {months.map((month, index) => (
-              <button
-                key={`${month.year}-${month.month}`}
-                onClick={() => setSelectedMonth(month)}
-                className={`
-                  px-4 py-2 rounded-lg font-semibold transition-colors
-                  ${selectedMonth?.year === month.year && selectedMonth?.month === month.month
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                  }
-                `}
-              >
-                {month.label}
-              </button>
-            ))}
-          </div>
+          {selectedOffice && (
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {months.map((month, index) => (
+                <button
+                  key={`${month.year}-${month.month}`}
+                  onClick={() => setSelectedMonth(month)}
+                  className={`
+                    px-4 py-2 rounded-lg font-semibold transition-colors
+                    ${selectedMonth?.year === month.year && selectedMonth?.month === month.month
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }
+                  `}
+                >
+                  {month.label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Booking Modal */}
           {showBookingForm && selectedDate && selectedTime && (
@@ -779,7 +852,12 @@ export default function BookingPage() {
 
           {/* Days Grid */}
           {selectedMonth && (
-            <div>
+            <div className="relative">
+              {/* Overlay when no office is selected */}
+              {!selectedOffice && (
+                <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm z-40 rounded-lg"></div>
+              )}
+              
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
                 {formatMonthLabel(selectedMonth)}
               </h2>
@@ -855,7 +933,7 @@ export default function BookingPage() {
             </div>
           )}
 
-          {availability.length === 0 && (
+          {offices.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600 dark:text-gray-400">Loading availability...</p>
             </div>
