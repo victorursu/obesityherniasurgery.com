@@ -9,21 +9,33 @@ export async function POST(request: NextRequest) {
     console.log('Proxying booking request to emr.docksal.site:', JSON.stringify(body, null, 2))
 
     // Get API URL from environment variable, fallback to default
+    // In Cloudflare Pages, env vars are available via process.env
     const apiUrl = process.env.BOOKING_API_URL || 'http://emr.docksal.site/api/booking'
     
     console.log('Attempting to fetch:', apiUrl)
 
     // Forward the request to the external API
-    // Use AbortSignal.timeout() for edge runtime compatibility (Cloudflare Workers)
-    const response = await fetch(apiUrl, {
+    // Create fetch options with timeout support for Cloudflare Workers
+    const fetchOptions: RequestInit = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(30000) // 30 second timeout
-    })
+      body: JSON.stringify(body)
+    }
+
+    // Use AbortSignal.timeout() if available (newer Cloudflare Workers), otherwise skip timeout
+    // Cloudflare Workers may not support AbortSignal.timeout() in all runtime versions
+    try {
+      if (typeof AbortSignal !== 'undefined' && typeof (AbortSignal as any).timeout === 'function') {
+        fetchOptions.signal = (AbortSignal as any).timeout(30000) // 30 second timeout
+      }
+    } catch (timeoutError) {
+      console.warn('AbortSignal.timeout() not available, proceeding without timeout:', timeoutError)
+    }
+
+    const response = await fetch(apiUrl, fetchOptions)
 
     console.log('External API response status:', response.status)
     console.log('External API response headers:', Object.fromEntries(response.headers.entries()))
@@ -56,15 +68,37 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error proxying booking request:', error)
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    const errorStack = error instanceof Error ? error.stack : undefined
-    console.error('Error details:', { errorMessage, errorStack })
+    
+    // Extract detailed error information
+    let errorMessage = 'Unknown error'
+    let errorName = 'Error'
+    let errorDetails: any = {}
+    
+    if (error instanceof Error) {
+      errorMessage = error.message
+      errorName = error.name
+      errorDetails = {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      }
+    } else if (typeof error === 'object' && error !== null) {
+      errorDetails = error
+      errorMessage = JSON.stringify(error)
+    } else {
+      errorMessage = String(error)
+    }
+    
+    console.error('Error details:', errorDetails)
     
     return NextResponse.json(
       { 
-        error: 'Failed to submit booking request', 
+        error: 'Failed to submit booking request',
+        errorName,
         details: errorMessage,
-        hint: 'Check if emr.docksal.site is accessible from the server'
+        fullError: errorDetails,
+        hint: 'Check if emr.docksal.site is accessible from the server',
+        apiUrl: process.env.BOOKING_API_URL || 'http://emr.docksal.site/api/booking'
       },
       { 
         status: 500,
