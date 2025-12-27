@@ -370,31 +370,82 @@ export default function BookingPage() {
     setShowSecondStep(true)
   }
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!selectedDate || !selectedTime) return
 
     // Validate second step fields
     if (!formData.reasonForAppointment || !formData.dateOfBirth || !formData.healthInsuranceId || !formData.healthInsuranceCarrier || !formData.authorizationConsent) {
+      alert(translations?.fillAllRequiredFields || 'Please fill in all required fields.')
       return
     }
 
-    const slotKey = `${selectedDate}-${selectedTime}`
-    const booking: Booking = {
+    // Map language code to full language name
+    const languageName = language === 'es' ? 'Spanish' : 'English'
+
+    // Get office name from selected office
+    const selectedOfficeData = offices.find(o => o.office_id === selectedOffice)
+    const officeName = selectedOfficeData?.office_name || ''
+
+    // Prepare request body matching the new API format
+    const requestBody = {
+      title: formData.name,
+      address: formData.address || '',
+      email: formData.email,
+      language: languageName,
+      phone: formData.phone,
+      appointment_type: formData.appointmentType,
+      carrier: formData.healthInsuranceCarrier,
+      consent: formData.authorizationConsent,
+      details: formData.details || '',
+      dob: formData.dateOfBirth,
+      insurance_id: formData.healthInsuranceId,
+      office: officeName,
+      reason: formData.reasonForAppointment,
       date: selectedDate,
-      time: selectedTime,
-      ...formData
+      time_slot: selectedTime
     }
 
-    // Store booking in memory (POC - not persisted)
-    setBookings(prev => new Map(prev).set(slotKey, booking))
+    try {
+      // POST to local API route (which proxies to external API)
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
 
-    setShowBookingForm(false)
-    setShowSecondStep(false)
-    setShowConfirmation(true)
-    setSelectedDate(null)
-    setSelectedTime(null)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error('Booking API error:', errorData)
+        throw new Error(errorData.error || errorData.details || `Booking failed: ${response.status}`)
+      }
+
+      const responseData = await response.json().catch(() => ({}))
+      console.log('Booking successful:', responseData)
+
+      // Store booking in memory (for UI display)
+      const slotKey = `${selectedDate}-${selectedTime}`
+      const booking: Booking = {
+        date: selectedDate,
+        time: selectedTime,
+        ...formData
+      }
+      setBookings(prev => new Map(prev).set(slotKey, booking))
+
+      // Close modal and show confirmation
+      setShowBookingForm(false)
+      setShowSecondStep(false)
+      setShowConfirmation(true)
+      setSelectedDate(null)
+      setSelectedTime(null)
+    } catch (error) {
+      console.error('Error submitting booking:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit booking. Please try again.'
+      alert(errorMessage)
+    }
   }
 
   const isSlotBooked = (date: string, time: string) => {
