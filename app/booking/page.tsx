@@ -27,6 +27,20 @@ interface AvailabilityData {
   offices: Office[]
 }
 
+interface ReservedSlot {
+  date: string
+  slots: string[]
+}
+
+interface ReservedOffice {
+  office_id: string
+  booked: ReservedSlot[]
+}
+
+interface ReservedData {
+  offices: ReservedOffice[]
+}
+
 interface Booking {
   date: string
   time: string
@@ -53,6 +67,7 @@ export default function BookingPage() {
   const { language, translations } = useLanguage()
   const [offices, setOffices] = useState<Office[]>([])
   const [availability, setAvailability] = useState<DayAvailability[]>([])
+  const [reservedSlots, setReservedSlots] = useState<ReservedOffice[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [bookings, setBookings] = useState<Map<string, Booking>>(new Map())
@@ -157,6 +172,27 @@ export default function BookingPage() {
             setOffices(data.offices || [])
           })
           .catch(fallbackErr => console.error('Error loading fallback availability:', fallbackErr))
+      })
+  }, [])
+
+  // Load reserved slots
+  useEffect(() => {
+    const reservedUrl = process.env.NEXT_PUBLIC_BOOKING_AVAILABILITY_RESERVED_URL || 'http://emr.docksal.site/booking-availability-reserved.json'
+    
+    fetch(reservedUrl)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch reserved slots: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then((data: ReservedData) => {
+        setReservedSlots(data.offices || [])
+      })
+      .catch(err => {
+        console.error('Error loading reserved slots:', err)
+        // If reserved slots fail to load, continue without them
+        setReservedSlots([])
       })
   }, [])
 
@@ -319,8 +355,24 @@ export default function BookingPage() {
     })
   }
 
+  // Check if a slot is reserved for the selected office
+  const isSlotReserved = (dateString: string, slot: string) => {
+    if (!selectedOffice) return false
+    
+    const reservedOffice = reservedSlots.find(o => o.office_id === selectedOffice)
+    if (!reservedOffice) return false
+    
+    const reservedDay = reservedOffice.booked.find(b => b.date === dateString)
+    if (!reservedDay) return false
+    
+    return reservedDay.slots.includes(slot)
+  }
+
   // Check if a slot is available for a specific date
   const isSlotAvailable = (dateString: string, slot: string) => {
+    // First check if slot is reserved
+    if (isSlotReserved(dateString, slot)) return false
+    
     const dayData = availability.find(d => d.date === dateString)
     if (!dayData) return false
     
@@ -384,9 +436,8 @@ export default function BookingPage() {
     // Map language code to full language name
     const languageName = language === 'es' ? 'Spanish' : 'English'
 
-    // Get office name from selected office
-    const selectedOfficeData = offices.find(o => o.office_id === selectedOffice)
-    const officeName = selectedOfficeData?.office_name || ''
+    // Get office machine name (office_id) from selected office
+    const officeMachineName = selectedOffice || ''
 
     // Prepare request body matching the new API format
     const requestBody = {
@@ -401,7 +452,7 @@ export default function BookingPage() {
       details: formData.details || '',
       dob: formData.dateOfBirth,
       insurance_id: formData.healthInsuranceId,
-      office: officeName,
+      office: officeMachineName,
       reason: formData.reasonForAppointment,
       date: selectedDate,
       time_slot: selectedTime
@@ -941,7 +992,8 @@ export default function BookingPage() {
                         <div className="grid grid-cols-4 gap-2">
                           {allTimeSlots.map((slot) => {
                             const isBooked = isSlotBooked(dateString, slot)
-                            const isAvailable = isSlotAvailable(dateString, slot) && !isBooked
+                            const isReserved = isSlotReserved(dateString, slot)
+                            const isAvailable = isSlotAvailable(dateString, slot) && !isBooked && !isReserved
                             
                             return (
                               <button
@@ -952,7 +1004,7 @@ export default function BookingPage() {
                                   px-3 py-2 text-sm font-medium rounded-lg transition-all
                                   ${isAvailable
                                     ? 'bg-primary text-white hover:bg-primary-dark cursor-pointer transform hover:scale-105'
-                                    : isBooked
+                                    : (isBooked || isReserved)
                                     ? 'bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 cursor-not-allowed'
                                     : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                                   }
