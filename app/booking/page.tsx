@@ -505,6 +505,9 @@ export default function BookingPage() {
       setShowConfirmation(true)
       setSelectedDate(null)
       setSelectedTime(null)
+      
+      // Scroll to top of page
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
       console.error('Error submitting booking:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit booking. Please try again.'

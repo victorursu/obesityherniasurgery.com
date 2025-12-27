@@ -94,6 +94,9 @@ export default function ContactPage() {
         message: ''
       })
       setShowOtherReason(false)
+      
+      // Scroll to top of page
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
       console.error('Error submitting contact form:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit form. Please try again.'
