@@ -14,10 +14,7 @@ export async function POST(request: NextRequest) {
     console.log('Attempting to fetch:', apiUrl)
 
     // Forward the request to the external API
-    // Create an AbortController for timeout handling
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
-    
+    // Use AbortSignal.timeout() for edge runtime compatibility (Cloudflare Workers)
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -25,10 +22,8 @@ export async function POST(request: NextRequest) {
         'Accept': 'application/json'
       },
       body: JSON.stringify(body),
-      signal: controller.signal
+      signal: AbortSignal.timeout(30000) // 30 second timeout
     })
-    
-    clearTimeout(timeoutId)
 
     console.log('External API response status:', response.status)
     console.log('External API response headers:', Object.fromEntries(response.headers.entries()))
