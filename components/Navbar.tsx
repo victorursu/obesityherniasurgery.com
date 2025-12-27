@@ -47,10 +47,16 @@ export default function Navbar() {
     { name: 'St. Mary\'s General Hospital - Passaic NJ', href: 'https://smh-nj.com/', external: true },
   ]
 
+  const formsSubmenu = [
+    { name: 'Payment Link', href: '/payment' },
+    { name: 'Booking / Appointments', href: '/booking' },
+    { name: 'Patient introduction', href: 'https://emr.obesityherniasurgery.com', external: true },
+  ]
+
   const menuItems = [
     { 
       name: 'Bariatric', 
-      href: '/bariatric',
+      href: '/',
       submenu: bariatricSubmenu
     },
     { name: 'Hernia', href: '/hernia' },
@@ -65,6 +71,11 @@ export default function Navbar() {
       submenu: hospitalsSubmenu
     },
     { name: 'Testimonials', href: '/testimonials' },
+    { 
+      name: 'Forms', 
+      href: '#',
+      submenu: formsSubmenu
+    },
     { name: 'Contact', href: '/contact' },
   ]
 
@@ -87,7 +98,7 @@ export default function Navbar() {
           </div>
           
           {/* Desktop Menu */}
-          <div className="hidden md:flex md:items-center md:space-x-3">
+          <div className="hidden md:flex md:items-center md:space-x-1">
             {menuItems.map((item) => (
               <div
                 key={item.name}
@@ -97,7 +108,12 @@ export default function Navbar() {
               >
                 <Link
                   href={item.href}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light px-3 py-2 text-sm font-medium transition-colors flex items-center"
+                  onClick={(e) => {
+                    if (item.href === '#') {
+                      e.preventDefault()
+                    }
+                  }}
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-light px-2 py-2 text-sm font-medium transition-colors flex items-center"
                 >
                   {item.name}
                   {item.submenu && (
@@ -317,7 +333,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <div className="px-2 pt-2 pb-3 space-y-0.5 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             {menuItems.map((item) => (
               <div key={item.name}>
                 {item.submenu ? (
