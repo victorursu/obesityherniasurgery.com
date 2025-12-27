@@ -50,9 +50,9 @@ export default function Navbar() {
   const formsSubmenu = [
     { name: 'Payment Link', href: '/payment' },
     { name: 'Booking / Appointments', href: '/booking' },
-    { name: 'Disability Document Intake', href: 'https://emr.obesityherniasurgery.com', external: true },
-    { name: 'Upload Documents', href: 'https://emr.obesityherniasurgery.com', external: true },
-    { name: 'New Bariatric Patient Info', href: 'https://emr.obesityherniasurgery.com', external: true },
+    { name: 'Disability Document Intake', href: 'https://emr.obesityherniasurgery.com/form/disability-patient-document-inta', external: true },
+    { name: 'Upload Documents', href: 'https://emr.obesityherniasurgery.com/form/document-upload-link', external: true },
+    { name: 'New Bariatric Patient Info', href: 'https://emr.obesityherniasurgery.com/form/bariatric-intake-form-internal', external: true },
     { name: 'New General Surgery Patient Info', href: 'https://emr.obesityherniasurgery.com', external: true },
   ]
 
