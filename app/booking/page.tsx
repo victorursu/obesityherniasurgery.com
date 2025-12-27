@@ -236,7 +236,10 @@ export default function BookingPage() {
   }, [showBookingForm])
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    // Parse date string directly to avoid timezone issues
+    // dateString format: "YYYY-MM-DD"
+    const [year, month, day] = dateString.split('-').map(Number)
+    const date = new Date(year, month - 1, day)
     return date.toLocaleDateString('en-US', { 
       weekday: 'short', 
       month: 'short', 
@@ -439,6 +442,15 @@ export default function BookingPage() {
     // Get office machine name (office_id) from selected office
     const officeMachineName = selectedOffice || ''
 
+    // Ensure we send the appointment type machine name (value), not the display label
+    // Find the appointment type object to get the machine name value
+    const selectedAppointmentType = appointmentTypes.find(type => type.value === formData.appointmentType)
+    const appointmentTypeMachineName = selectedAppointmentType?.value || formData.appointmentType
+
+    // Ensure we send the reason machine name (value), not the display label
+    const selectedReason = reasonForAppointmentOptions.find(option => option.value === formData.reasonForAppointment)
+    const reasonMachineName = selectedReason?.value || formData.reasonForAppointment
+
     // Prepare request body matching the new API format
     const requestBody = {
       title: formData.name,
@@ -446,14 +458,14 @@ export default function BookingPage() {
       email: formData.email,
       language: languageName,
       phone: formData.phone,
-      appointment_type: formData.appointmentType,
+      appointment_type: appointmentTypeMachineName, // Machine name (e.g., 'appointment_with_dr_calin')
       carrier: formData.healthInsuranceCarrier,
       consent: formData.authorizationConsent,
       details: formData.details || '',
       dob: formData.dateOfBirth,
       insurance_id: formData.healthInsuranceId,
       office: officeMachineName,
-      reason: formData.reasonForAppointment,
+      reason: reasonMachineName, // Machine name (e.g., 'weight_loss', 'hernia')
       date: selectedDate,
       time_slot: selectedTime
     }
