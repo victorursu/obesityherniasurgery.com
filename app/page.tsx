@@ -1,5 +1,5 @@
 import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import FooterWithReviews from '@/components/FooterWithReviews'
 import Slideshow from '@/components/Slideshow'
 import Link from 'next/link'
 
@@ -269,7 +269,7 @@ export default function Home() {
         </section>
       </main>
       
-      <Footer />
+      <FooterWithReviews />
     </div>
   )
 }
