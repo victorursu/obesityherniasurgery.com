@@ -17,7 +17,6 @@ interface GoogleReviewsProps {
 
 export default function GoogleReviews({ 
   placeId, 
-  apiKey, 
   maxReviews = 3 
 }: GoogleReviewsProps) {
   const [reviews, setReviews] = useState<GoogleReview[]>([])
