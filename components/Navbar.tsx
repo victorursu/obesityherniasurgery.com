@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from './ThemeProvider'
+import { useLanguage } from './LanguageProvider'
 import GastricBypassLogo from './GastricBypassLogo'
 
 export default function Navbar() {
@@ -10,6 +12,7 @@ export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null)
   const { theme, toggleTheme } = useTheme()
+  const { language, setLanguage } = useLanguage()
 
   const bariatricSubmenu = [
     { name: 'Sleeve gastrectomy', href: '/sleeve-gastrectomy' },
@@ -147,6 +150,48 @@ export default function Navbar() {
               </div>
             ))}
             
+            {/* Language Switcher */}
+            <div className="ml-4 flex items-center gap-2 border-r border-gray-300 dark:border-gray-600 pr-4">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  language === 'en'
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+                aria-label="Switch to English"
+                title="English"
+              >
+                <ReactCountryFlag
+                  countryCode="GB"
+                  svg
+                  style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                  }}
+                />
+              </button>
+              <button
+                onClick={() => setLanguage('es')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  language === 'es'
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+                aria-label="Switch to Spanish"
+                title="Español"
+              >
+                <ReactCountryFlag
+                  countryCode="ES"
+                  svg
+                  style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                  }}
+                />
+              </button>
+            </div>
+            
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleTheme}
@@ -167,6 +212,48 @@ export default function Navbar() {
 
           {/* Hamburger Button */}
           <div className="md:hidden flex items-center space-x-2">
+            {/* Language Switcher Mobile */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  language === 'en'
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+                aria-label="Switch to English"
+                title="English"
+              >
+                <ReactCountryFlag
+                  countryCode="GB"
+                  svg
+                  style={{
+                    width: '1rem',
+                    height: '1rem',
+                  }}
+                />
+              </button>
+              <button
+                onClick={() => setLanguage('es')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  language === 'es'
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+                aria-label="Switch to Spanish"
+                title="Español"
+              >
+                <ReactCountryFlag
+                  countryCode="ES"
+                  svg
+                  style={{
+                    width: '1rem',
+                    height: '1rem',
+                  }}
+                />
+              </button>
+            </div>
+            
             {/* Dark Mode Toggle Mobile */}
             <button
               onClick={toggleTheme}

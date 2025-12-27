@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface DayAvailability {
   date: string
@@ -18,6 +19,7 @@ interface Booking {
   time: string
   name: string
   email: string
+  address?: string
   phone: string
   appointmentType: string
   details?: string
@@ -35,6 +37,7 @@ interface MonthInfo {
 }
 
 export default function BookingPage() {
+  const { language, translations } = useLanguage()
   const [availability, setAvailability] = useState<DayAvailability[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -47,6 +50,7 @@ export default function BookingPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    address: '',
     phone: '',
     appointmentType: '',
     details: '',
@@ -58,32 +62,55 @@ export default function BookingPage() {
   })
 
   const appointmentTypes = [
-    'BOOK AN APPOINTMENT WITH DR CALIN',
-    'WEIGHT LOSS SURGERY OPTIONS',
-    'WEIGHT LOSS MEDICATION',
-    'HERNIA',
-    'GALLBLADDER',
-    'COLONOSCOPY',
-    'OTHER SURGICAL PROBLEMS',
-    'FOLLOW UP WITH DR CALIN AFTER SURGERY'
+    { value: 'appointment_with_dr_calin', key: 'appointment_with_dr_calin' },
+    { value: 'weight_loss_surgery_options', key: 'weight_loss_surgery_options' },
+    { value: 'weight_loss_medication', key: 'weight_loss_medication' },
+    { value: 'hernia', key: 'hernia' },
+    { value: 'gallbladder', key: 'gallbladder' },
+    { value: 'colonoscopy', key: 'colonoscopy' },
+    { value: 'other_surgical_problems', key: 'other_surgical_problems' },
+    { value: 'follow_up_with_dr_calin_after_surgery', key: 'follow_up_with_dr_calin_after_surgery' }
+  ]
+
+  const reasonForAppointmentOptions = [
+    { value: 'weight_loss', key: 'weight_loss' },
+    { value: 'hernia', key: 'hernia' },
+    { value: 'gallbladder', key: 'gallbladder' },
+    { value: 'follow_up_after_surgery', key: 'follow_up_after_surgery' },
+    { value: 'other', key: 'other' }
   ]
 
   // Generate 6 months from current date
   const months = useMemo(() => {
     const today = new Date()
     const monthsList: MonthInfo[] = []
+    const monthNames = translations?.months ? [
+      translations.months.january,
+      translations.months.february,
+      translations.months.march,
+      translations.months.april,
+      translations.months.may,
+      translations.months.june,
+      translations.months.july,
+      translations.months.august,
+      translations.months.september,
+      translations.months.october,
+      translations.months.november,
+      translations.months.december
+    ] : []
     
     for (let i = 0; i < 6; i++) {
       const date = new Date(today.getFullYear(), today.getMonth() + i, 1)
+      const monthName = monthNames[date.getMonth()] || date.toLocaleDateString('en-US', { month: 'long' })
       monthsList.push({
         year: date.getFullYear(),
         month: date.getMonth(),
-        label: date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        label: `${monthName} ${date.getFullYear()}`
       })
     }
     
     return monthsList
-  }, [])
+  }, [translations])
 
   // Set initial selected month to current month
   useEffect(() => {
@@ -93,13 +120,29 @@ export default function BookingPage() {
   }, [months, selectedMonth])
 
   useEffect(() => {
-    // Load availability from JSON file
-    fetch('/booking/availability.json')
-      .then(res => res.json())
+    // Load availability from external URL (configurable via env variable)
+    const availabilityUrl = process.env.NEXT_PUBLIC_BOOKING_AVAILABILITY_URL || 'https://emr.obesityherniasurgery.com/booking-availability.json'
+    
+    fetch(availabilityUrl)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch availability: ${res.status}`)
+        }
+        return res.json()
+      })
       .then((data: AvailabilityData) => {
         setAvailability(data.availability)
       })
-      .catch(err => console.error('Error loading availability:', err))
+      .catch(err => {
+        console.error('Error loading availability:', err)
+        // Fallback to local file if external URL fails
+        fetch('/booking/availability.json')
+          .then(res => res.json())
+          .then((data: AvailabilityData) => {
+            setAvailability(data.availability)
+          })
+          .catch(fallbackErr => console.error('Error loading fallback availability:', fallbackErr))
+      })
   }, [])
 
   // Lock body scroll when modal is open
@@ -151,10 +194,41 @@ export default function BookingPage() {
     // Parse date string directly to avoid timezone issues
     const [year, month, day] = dateString.split('-').map(Number)
     const date = new Date(year, month - 1, day)
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      day: 'numeric'
-    })
+    const weekdayIndex = date.getDay() // 0 = Sunday, 1 = Monday, etc.
+    const weekdays = translations?.weekdays ? [
+      translations.weekdays.sunday,    // 0
+      translations.weekdays.monday,    // 1
+      translations.weekdays.tuesday,   // 2
+      translations.weekdays.wednesday, // 3
+      translations.weekdays.thursday,  // 4
+      translations.weekdays.friday,     // 5
+      translations.weekdays.saturday   // 6
+    ] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const weekdayName = weekdays[weekdayIndex] || date.toLocaleDateString('en-US', { weekday: 'short' })
+    return `${weekdayName} ${day}`
+  }
+
+  // Format month label with current translations
+  const formatMonthLabel = (monthInfo: MonthInfo | null) => {
+    if (!monthInfo || !translations?.months) {
+      return monthInfo?.label || ''
+    }
+    const monthNames = [
+      translations.months.january,
+      translations.months.february,
+      translations.months.march,
+      translations.months.april,
+      translations.months.may,
+      translations.months.june,
+      translations.months.july,
+      translations.months.august,
+      translations.months.september,
+      translations.months.october,
+      translations.months.november,
+      translations.months.december
+    ]
+    const monthName = monthNames[monthInfo.month] || monthInfo.label.split(' ')[0]
+    return `${monthName} ${monthInfo.year}`
   }
 
   // Format time slot based on selected format
@@ -244,6 +318,7 @@ export default function BookingPage() {
     setFormData({ 
       name: '', 
       email: '', 
+      address: '',
       phone: '', 
       appointmentType: '', 
       details: '',
@@ -310,7 +385,7 @@ export default function BookingPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               {/* Time Format Toggle */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Time Format:</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{translations?.timeFormat || 'Time Format'}:</span>
                 <span className="text-xs text-gray-600 dark:text-gray-400">24h</span>
                 <button
                   onClick={() => setTimeFormat(timeFormat === '24h' ? '12h' : '24h')}
@@ -330,22 +405,22 @@ export default function BookingPage() {
 
               {/* Color Coding Legend */}
               <div className="flex flex-wrap items-center gap-4 text-sm">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Legend:</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">{translations?.legend || 'Legend'}:</span>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded bg-primary"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Available</span>
+                  <span className="text-gray-600 dark:text-gray-400">{translations?.available || 'Available'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Unavailable</span>
+                  <span className="text-gray-600 dark:text-gray-400">{translations?.unavailable || 'Unavailable'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded bg-red-200 dark:bg-red-900"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Booked</span>
+                  <span className="text-gray-600 dark:text-gray-400">{translations?.booked || 'Booked'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded bg-pink-50 dark:bg-pink-700/30"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Sunday</span>
+                  <span className="text-gray-600 dark:text-gray-400">{translations?.sunday || 'Sunday'}</span>
                 </div>
               </div>
             </div>
@@ -354,7 +429,7 @@ export default function BookingPage() {
 
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
-            Book an Appointment
+            {translations?.bookAnAppointment || 'Book an Appointment'}
           </h1>
 
           {showConfirmation && (
@@ -417,7 +492,7 @@ export default function BookingPage() {
                     <div className="w-1/2 p-6 overflow-y-auto max-h-[90vh]">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        Book Appointment
+                        {translations?.bookAppointment || 'Book Appointment'}
                       </h2>
                       <button
                         onClick={() => {
@@ -458,7 +533,7 @@ export default function BookingPage() {
                     <form onSubmit={handleContinueBooking} className="space-y-4">
                       <div>
                         <label htmlFor="appointmentType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Appointment Type *
+                          {translations?.appointmentType || 'Appointment Type'} *
                         </label>
                         <select
                           id="appointmentType"
@@ -467,10 +542,10 @@ export default function BookingPage() {
                           onChange={(e) => setFormData({ ...formData, appointmentType: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         >
-                          <option value="">Select appointment type</option>
+                          <option value="">{translations?.selectAppointmentType || 'Select appointment type'}</option>
                           {appointmentTypes.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
+                            <option key={type.value} value={type.value}>
+                              {translations?.appointmentTypes?.[type.key] || type.value}
                             </option>
                           ))}
                         </select>
@@ -478,7 +553,7 @@ export default function BookingPage() {
 
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Name *
+                          {translations?.name || 'Name'} *
                         </label>
                         <input
                           type="text"
@@ -487,13 +562,13 @@ export default function BookingPage() {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                          placeholder="Enter your full name"
+                          placeholder={translations?.enterYourFullName || 'Enter your full name'}
                         />
                       </div>
 
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Phone *
+                          {translations?.phone || 'Phone'} *
                         </label>
                         <input
                           type="tel"
@@ -502,13 +577,13 @@ export default function BookingPage() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                          placeholder="Enter your phone number"
+                          placeholder={translations?.enterYourPhoneNumber || 'Enter your phone number'}
                         />
                       </div>
 
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Email Address *
+                          {translations?.emailAddress || 'Email Address'} *
                         </label>
                         <input
                           type="email"
@@ -517,13 +592,27 @@ export default function BookingPage() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                          placeholder="Enter your email address"
+                          placeholder={translations?.enterYourEmailAddress || 'Enter your email address'}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="details" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Details about your visit
+                        <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          {translations?.address || 'Address'}
+                        </label>
+                        <input
+                          type="text"
+                          id="address"
+                          value={formData.address}
+                          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                          placeholder={translations?.enterYourAddress || 'Enter your address (optional)'}
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="details" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          {translations?.detailsAboutVisit || 'Details about your visit'}
                         </label>
                         <textarea
                           id="details"
@@ -531,7 +620,7 @@ export default function BookingPage() {
                           onChange={(e) => setFormData({ ...formData, details: e.target.value })}
                           rows={4}
                           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                          placeholder="Please provide any additional details about your visit (optional)"
+                          placeholder={translations?.detailsAboutVisitPlaceholder || 'Please provide any additional details about your visit (optional)'}
                         />
                       </div>
 
@@ -540,7 +629,7 @@ export default function BookingPage() {
                           type="submit"
                           className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors"
                         >
-                          Continue booking
+                          {translations?.continueBooking || 'Continue booking'}
                         </button>
                         <button
                           type="button"
@@ -552,7 +641,7 @@ export default function BookingPage() {
                           }}
                           className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         >
-                          Cancel
+                          {translations?.cancel || 'Cancel'}
                         </button>
                       </div>
                     </form>
@@ -562,12 +651,12 @@ export default function BookingPage() {
                     <div className="w-1/2 p-6 overflow-y-auto max-h-[90vh]">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                          Additional Information
+                          {translations?.additionalInformation || 'Additional Information'}
                         </h2>
                         <button
                           onClick={() => setShowSecondStep(false)}
                           className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-                          aria-label="Back"
+                          aria-label={translations?.back || 'Back'}
                         >
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -578,7 +667,7 @@ export default function BookingPage() {
                       <form onSubmit={handleBookingSubmit} className="space-y-4">
                         <div>
                           <label htmlFor="reasonForAppointment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            REASON FOR THE APPOINTMENT *
+                            {translations?.reasonForAppointment || 'REASON FOR THE APPOINTMENT'} *
                           </label>
                           <select
                             id="reasonForAppointment"
@@ -588,18 +677,17 @@ export default function BookingPage() {
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                           >
                             <option value="">--select an option--</option>
-                            <option value="WEIGHT LOSS - PÉRDIDA DE PESO">WEIGHT LOSS - PÉRDIDA DE PESO</option>
-                            <option value="HERNIA">HERNIA</option>
-                            <option value="GALLBLADDER - VESÍCULA BILIAR">GALLBLADDER - VESÍCULA BILIAR</option>
-                            <option value="FOLLOW UP AFTER SURGERY WITH DR CALIN">FOLLOW UP AFTER SURGERY WITH DR CALIN</option>
-                            <option value="SEGUIMIENTO DESPUÉS DE LA CIRUGÍA CON EL DR. CALIN">SEGUIMIENTO DESPUÉS DE LA CIRUGÍA CON EL DR. CALIN</option>
-                            <option value="OTHER - OTRO">OTHER - OTRO</option>
+                            {reasonForAppointmentOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {translations?.reasonForAppointmentOptions?.[option.key] || option.value}
+                              </option>
+                            ))}
                           </select>
                         </div>
 
                         <div>
                           <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            DATE OF BIRTH *
+                            {translations?.dateOfBirth || 'DATE OF BIRTH'} *
                           </label>
                           <input
                             type="text"
@@ -614,7 +702,7 @@ export default function BookingPage() {
 
                         <div>
                           <label htmlFor="healthInsuranceId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Health Insurance ID Number *
+                            {translations?.healthInsuranceIdNumber || 'Health Insurance ID Number'} *
                           </label>
                           <input
                             type="text"
@@ -623,13 +711,13 @@ export default function BookingPage() {
                             value={formData.healthInsuranceId}
                             onChange={(e) => setFormData({ ...formData, healthInsuranceId: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                            placeholder="Enter your health insurance ID number"
+                            placeholder={translations?.enterHealthInsuranceId || 'Enter your health insurance ID number'}
                           />
                         </div>
 
                         <div>
                           <label htmlFor="healthInsuranceCarrier" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Health Insurance Carrier *
+                            {translations?.healthInsuranceCarrier || 'Health Insurance Carrier'} *
                           </label>
                           <input
                             type="text"
@@ -638,17 +726,17 @@ export default function BookingPage() {
                             value={formData.healthInsuranceCarrier}
                             onChange={(e) => setFormData({ ...formData, healthInsuranceCarrier: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                            placeholder="Enter your health insurance carrier"
+                            placeholder={translations?.enterHealthInsuranceCarrier || 'Enter your health insurance carrier'}
                           />
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Authorization Consent *
+                            {translations?.authorizationConsent || 'Authorization Consent'} *
                           </label>
                           <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700/50 max-h-40 overflow-y-auto mb-3">
                             <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                              I hereby authorize Dr. Marius Calin and his staff to collect, use, and store my personal and medical information, including but not limited to my name, date of birth, contact details, medical history, diagnostic results, treatment plans, insurance and billing data, for purposes including medical diagnosis and treatment, insurance claims, appointment reminders, care coordination, and administrative operations. I understand this information will only be shared with authorized entities involved in my care or required operations, and will not be sold or disclosed to unauthorized parties. I acknowledge my right to revoke this consent in writing at any time, understanding that such revocation will not apply to information already used or disclosed. My signature confirms I have read and agree to this statement.
+                              {translations?.authorizationConsentStatement || 'I hereby authorize Dr. Marius Calin and his staff to collect, use, and store my personal and medical information, including but not limited to my name, date of birth, contact details, medical history, diagnostic results, treatment plans, insurance and billing data, for purposes including medical diagnosis and treatment, insurance claims, appointment reminders, care coordination, and administrative operations. I understand this information will only be shared with authorized entities involved in my care or required operations, and will not be sold or disclosed to unauthorized parties. I acknowledge my right to revoke this consent in writing at any time, understanding that such revocation will not apply to information already used or disclosed. My signature confirms I have read and agree to this statement.'}
                             </p>
                           </div>
                           <div className="flex items-start">
@@ -661,7 +749,7 @@ export default function BookingPage() {
                               className="mt-1 mr-2 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                             />
                             <label htmlFor="authorizationConsent" className="text-sm text-gray-700 dark:text-gray-300">
-                              I have read and agree to the authorization statement above *
+                              {translations?.authorizationConsentText || 'I have read and agree to the authorization statement above'} *
                             </label>
                           </div>
                         </div>
@@ -671,14 +759,14 @@ export default function BookingPage() {
                             type="submit"
                             className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors"
                           >
-                            Confirm Booking
+                            {translations?.confirmBooking || 'Confirm Booking'}
                           </button>
                           <button
                             type="button"
                             onClick={() => setShowSecondStep(false)}
                             className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                           >
-                            Back
+                            {translations?.back || 'Back'}
                           </button>
                         </div>
                       </form>
@@ -693,7 +781,7 @@ export default function BookingPage() {
           {selectedMonth && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-                {selectedMonth.label}
+                {formatMonthLabel(selectedMonth)}
               </h2>
               
               {allDays.length === 0 ? (
