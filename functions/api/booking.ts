@@ -6,6 +6,14 @@ interface Env {
 }
 
 export async function onRequest({ request, env }: { request: Request; env: Env }) {
+  // Log that this Cloudflare Pages Function is being called
+  console.log('Cloudflare Pages Function called for /api/booking', {
+    method: request.method,
+    url: request.url,
+    hasEnv: !!env,
+    envUrl: env?.BOOKING_API_URL || 'using default'
+  });
+
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, {
