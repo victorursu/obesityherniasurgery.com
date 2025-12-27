@@ -92,7 +92,32 @@
     "authorizationConsentText": "I have read and agree to the authorization statement above",
     "authorizationConsentStatement": "I hereby authorize Dr. Marius Calin and his staff to collect, use, and store my personal and medical information, including but not limited to my name, date of birth, contact details, medical history, diagnostic results, treatment plans, insurance and billing data, for purposes including medical diagnosis and treatment, insurance claims, appointment reminders, care coordination, and administrative operations. I understand this information will only be shared with authorized entities involved in my care or required operations, and will not be sold or disclosed to unauthorized parties. I acknowledge my right to revoke this consent in writing at any time, understanding that such revocation will not apply to information already used or disclosed. My signature confirms I have read and agree to this statement.",
     "confirmBooking": "Confirm Booking",
-    "back": "Back"
+    "back": "Back",
+    "bookingConfirmed": "Booking confirmed!",
+    "appointmentScheduled": "Your appointment has been scheduled. (Note: the appt. is not finalized until you receive a confirmation message.)",
+    "contactDrMariusCalin": "Contact Dr. Marius Calin",
+    "contactIntro": "Please fill out the following information and Dr Calin will reach out to you as soon as possible. For any emergent issue, please call 911 or go to the nearest emergency department.",
+    "lastNameFirstName": "Last name, First Name",
+    "yourEmail": "Your Email",
+    "yourContactPhoneNumber": "Your contact phone number",
+    "reasonForContact": "Reason for contact",
+    "selectReason": "Select reason",
+    "establishedPatientFollowup": "Established Patient Followup",
+    "weightLossMedication": "Weight Loss Medication",
+    "heartburn": "Heartburn",
+    "other": "Other",
+    "otherReason": "Please specify other reason",
+    "reasonForContactOptions": {
+      "establishedPatientFollowup": "Established Patient Followup",
+      "weightLossMedication": "Weight Loss Medication",
+      "heartburn": "Heartburn",
+      "other": "Other"
+    },
+    "message": "Message",
+    "enterMessage": "Enter your message",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "fillAllRequiredFields": "Please fill in all required fields."
   },
   "es": {
     "timeFormat": "Formato de Hora",
@@ -187,7 +212,32 @@
     "authorizationConsentText": "He leído y estoy de acuerdo con la declaración de autorización anterior",
     "authorizationConsentStatement": "Por la presente autorizo al Dr. Marius Calin y su personal a recopilar, usar y almacenar mi información personal y médica, incluyendo pero no limitado a mi nombre, fecha de nacimiento, datos de contacto, historial médico, resultados de diagnóstico, planes de tratamiento, datos de seguros y facturación, para propósitos que incluyen diagnóstico y tratamiento médico, reclamos de seguros, recordatorios de citas, coordinación de atención y operaciones administrativas. Entiendo que esta información solo será compartida con entidades autorizadas involucradas en mi atención o operaciones requeridas, y no será vendida o divulgada a partes no autorizadas. Reconozco mi derecho a revocar este consentimiento por escrito en cualquier momento, entendiendo que tal revocación no se aplicará a la información ya utilizada o divulgada. Mi firma confirma que he leído y estoy de acuerdo con esta declaración.",
     "confirmBooking": "Confirmar Reserva",
-    "back": "Atrás"
+    "back": "Atrás",
+    "bookingConfirmed": "¡Reserva confirmada!",
+    "appointmentScheduled": "Su cita ha sido programada. (Nota: la cita no está finalizada hasta que reciba un mensaje de confirmación.)",
+    "contactDrMariusCalin": "Contactar al Dr. Marius Calin",
+    "contactIntro": "Por favor, complete la siguiente información y el Dr Calin se pondrá en contacto contigo lo antes posible. Para cualquier problema urgente, por favor llama al 911 o dirígete al departamento de emergencia más cercano.",
+    "lastNameFirstName": "Apellido, Nombre",
+    "yourEmail": "Tu correo electrónico",
+    "yourContactPhoneNumber": "Tu número de teléfono de contacto",
+    "reasonForContact": "Motivo de contacto",
+    "selectReason": "Seleccione el motivo",
+    "establishedPatientFollowup": "Seguimiento de Paciente Establecido",
+    "weightLossMedication": "Medicamentos para Pérdida de Peso",
+    "heartburn": "Acidez",
+    "other": "Otro",
+    "otherReason": "Por favor especifique otro motivo",
+    "reasonForContactOptions": {
+      "establishedPatientFollowup": "Seguimiento de Paciente Establecido",
+      "weightLossMedication": "Medicamentos para Pérdida de Peso",
+      "heartburn": "Acidez",
+      "other": "Otro"
+    },
+    "message": "Mensaje",
+    "enterMessage": "Ingrese su mensaje",
+    "submit": "Enviar",
+    "submitting": "Enviando...",
+    "fillAllRequiredFields": "Por favor complete todos los campos requeridos."
   }
 }
 

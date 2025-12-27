@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    console.log('Proxying booking request to emr.docksal.site:', JSON.stringify(body, null, 2));
+    console.log('Proxying contact form request:', JSON.stringify(body, null, 2));
 
     // Get API URL from environment variable, fallback to default
-    const apiUrl = process.env.BOOKING_API_URL || 'http://emr.docksal.site/api/booking';
+    const apiUrl = process.env.CONTACT_API_URL || 'https://emr.obesityherniasurgery.com/api/contact-form';
     
     console.log('Attempting to fetch:', apiUrl);
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       const errorText = await response.text();
       console.error('External API error response:', errorText);
       return NextResponse.json(
-        { error: `Booking failed: ${response.status}`, details: errorText },
+        { error: `Contact form submission failed: ${response.status}`, details: errorText },
         {
           status: response.status,
           headers: {
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log('Booking successful, response:', data);
+    console.log('Contact form submission successful, response:', data);
     
     return NextResponse.json(data, {
       status: 200,
@@ -53,14 +53,14 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error proxying booking request:', error);
+    console.error('Error proxying contact form request:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     return NextResponse.json(
       {
-        error: 'Failed to submit booking request',
+        error: 'Failed to submit contact form request',
         details: errorMessage,
-        hint: 'Check if emr.docksal.site is accessible from the server',
+        hint: 'Check if the contact API URL is accessible from the server',
       },
       {
         status: 500,
@@ -84,7 +84,4 @@ export async function OPTIONS() {
     },
   });
 }
-
-
-
 

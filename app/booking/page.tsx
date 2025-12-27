@@ -629,8 +629,8 @@ export default function BookingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <p className="font-semibold pr-6">Booking confirmed!</p>
-              <p className="pr-6">Your appointment has been scheduled. (Note: the appt. is not finalized until you receive a confirmation message.)</p>
+              <p className="font-semibold pr-6">{translations?.bookingConfirmed || 'Booking confirmed!'}</p>
+              <p className="pr-6">{translations?.appointmentScheduled || 'Your appointment has been scheduled. (Note: the appt. is not finalized until you receive a confirmation message.)'}</p>
             </div>
           )}
 
